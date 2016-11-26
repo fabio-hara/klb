@@ -1,15 +1,21 @@
 # Machine related functions
 
+# azure_vm_new creates a new `virtual machine instance`.
+# `name` is the resource name
+# `group` is the resource channel
+# `location` is the azure region
+# `ostype` indicates the operating system that will boot.
+# See `azure_vm_create` to commit the create command.
 fn azure_vm_new(name, group, location, ostype) {
 	instance = (
 		"--name"
 		$name
-	    "--resource-group"
-	    $group
-	    "--location"
-	    $location
-	    "--os-type"
-	    $ostype
+		"--resource-group"
+		$group
+		"--location"
+		$location
+		"--os-type"
+		$ostype
 	)
 
 	return $instance
