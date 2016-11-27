@@ -8,8 +8,7 @@ ifndef GOPATH
 $(error $$GOPATH is not set)
 endif
 
-all:
-	@echo "did you mean 'make test' ?"
+all: testall install
 
 deps: aws-deps azure-deps jq-dep
 
@@ -32,9 +31,14 @@ depsdev:
 	go get -d ./tests/...
 	go get -d ./cmd/klb/...
 
-testall: depsdev
-	cd tests/azure && go test -race ./...
+install:
+	cd cmd/klb && go install
+
+testtools: depsdev
 	cd cmd/klb && go test -race ./...
 
-test: depsdev
+testall: depsdev testtools
+	cd tests/azure && go test -race ./...
+
+test: depsdev testtools
 	cd tests/azure && go test -run=$(TESTRUN) ./...

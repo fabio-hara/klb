@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"os"
 	"testing"
 )
@@ -65,7 +64,7 @@ func TestDoc(t *testing.T) {
 		{
 			"",
 			"",
-			fmt.Sprintf("Usage: %s doc <package>.<fn name>\n", os.Args[0]),
+			"Usage: klb.test doc <package>.<fn name>\n",
 			"",
 		},
 
@@ -74,7 +73,7 @@ func TestDoc(t *testing.T) {
 			"blahbleh.bli",
 			"",
 			"",
-			"Function blahbleh.bli not found",
+			"",
 		},
 
 		{

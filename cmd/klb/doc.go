@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -96,7 +95,7 @@ func lookFn(stdout, stderr io.Writer, fname string, pack string, fun string) boo
 }
 
 func docUsage(out io.Writer) {
-	fmt.Fprintf(out, "Usage: %s doc <package>.<fn name>\n", os.Args[0])
+	fmt.Fprintf(out, "Usage: %s doc <package>.<fn name>\n", filepath.Base(os.Args[0]))
 }
 
 func doc(stdout, stderr io.Writer, args []string) error {
@@ -130,7 +129,7 @@ func doc(stdout, stderr io.Writer, args []string) error {
 		nashpath = homepath + "/.nash"
 	}
 
-	err := filepath.Walk(nashpath+"/lib", func(path string, info os.FileInfo, err error) error {
+	return filepath.Walk(nashpath+"/lib", func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -147,20 +146,8 @@ func doc(stdout, stderr io.Writer, args []string) error {
 			return nil
 		}
 
-		if found := lookFn(stdout, stderr, path, pack, funName); found {
-			return errors.New("found")
-		}
+		lookFn(stdout, stderr, path, pack, funName)
 
 		return nil
 	})
-
-	if err != nil {
-		if err.Error() == "found" {
-			return nil
-		}
-
-		return err
-	}
-
-	return fmt.Errorf("Function %s.%s not found", pack, funName)
 }
