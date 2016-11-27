@@ -17,11 +17,12 @@ jq-dep:
 depsdev:
 	@echo "Getting dependencies for dev"
 	go get -d ./tests/...
+	go get -d ./cmd/klb/...
 
-testazure: depsdev
+testazure:
 	cd tests/azure && go test ./...
 
 testtools:
 	cd cmd/klb && go test ./...
 
-test: testtools testazure
+test: depsdev testtools testazure
