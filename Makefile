@@ -20,3 +20,8 @@ depsdev:
 
 testazure: depsdev
 	cd tests/azure && go test ./...
+
+testtools:
+	cd cmd/klb && go test ./...
+
+test: testtools testazure
