@@ -10,30 +10,20 @@ import (
 	"github.com/NeowayLabs/nash/sh"
 )
 
-var (
-	ResourceGroupName = fmt.Sprintf("klb-resgroup-test-%d",
-		rand.Intn(1000))
-)
+func genResourceGroupName() string {
+	return fmt.Sprintf("klb-resgroup-tests-%d", rand.Intn(1000))
+}
 
-func TestHandleResourceGroupLifeCycle(t *testing.T) {
+func testResourceGroupCreation(t *testing.T) {
 	session := azure.NewSession(t)
 
 	shell := nash.Setup(t)
-	shell.Setvar("ResourceGroup", sh.NewStrObj(ResourceGroupName))
 
-	shell.Setvar("AZURE_CLIENT_ID", sh.NewStrObj(session.ClientID))
-	shell.Setvar("AZURE_TENANT_ID", sh.NewStrObj(session.TenantID))
-	shell.Setvar("AZURE_CLIENT_SECRET", sh.NewStrObj(session.ClientSecret))
+	resgroup := genResourceGroupName()
 
-	err := shell.Exec("setup-login", `
-	azure login -q -u $AZURE_CLIENT_ID --service-principal --tenant $AZURE_TENANT_ID -p $AZURE_CLIENT_SECRET
-	`)
+	shell.Setvar("ResourceGroup", sh.NewStrObj(resgroup))
 
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	err = shell.Exec("TestHandleResourceGroupLifeCycle", `
+	err := shell.Exec("TestResourceGroupCreation", `
              import ../../azure/all
              azure_group_create($ResourceGroup, "eastus")
         `)
@@ -43,6 +33,39 @@ func TestHandleResourceGroupLifeCycle(t *testing.T) {
 	}
 
 	resources := azure.NewResources(t, session)
-	defer resources.Delete(t, ResourceGroupName)
-	resources.Check(t, ResourceGroupName)
+	defer resources.Delete(t, resgroup)
+	resources.AssertExists(t, resgroup)
+}
+
+func testResourceGroupDeletion(t *testing.T) {
+	session := azure.NewSession(t)
+
+	shell := nash.Setup(t)
+
+	resgroup := genResourceGroupName()
+
+	shell.Setvar("ResourceGroup", sh.NewStrObj(resgroup))
+
+	err := shell.Exec("TestResourceGroupDeletion", `
+             import ../../azure/all
+             azure_group_create($ResourceGroup, "eastus")
+        `)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	resources := azure.NewResources(t, session)
+
+	resources.AssertExists(t, resgroup)
+
+	err = shell.Exec("TestResourceGroupDeletion2", `
+            azure_group_delete($ResourceGroup)
+        `)
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	resources.AssertDeleted(t, resgroup)
 }
