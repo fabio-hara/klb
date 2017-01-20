@@ -73,13 +73,13 @@ Basic usage:
 
 ```sh
 λ> ./tools/azure/getcredentials.sh
-Usage:  ./tools/azure/getcredentials.sh <(sh|nash)> <service principal name> <service secret>
+Usage:  ./tools/azure/getcredentials.sh <(sh|nash)> <service principal name> <service secret> <subscription name or id>
 ```
 
 For cool nash shells:
 
 ```sh
-λ> ./tools/azure/getcredentials.sh nash klb-sp-tests 123456
+λ> ./tools/azure/getcredentials.sh nash klb-sp-tests 123456 "CLOUDFORMATION - QA"
 setenv AZURE_SUBSCRIPTION_ID="XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXXXXX"
 setenv AZURE_SUBSCRIPTION_NAME="CLOUDFORMATION - QA"
 setenv AZURE_TENANT_ID="XXXXXXXX-XXXX-XXXX-XXXXXXXXXXXXXX"
@@ -90,14 +90,14 @@ setenv AZURE_CLIENT_SECRET="123456"
 Redirect the output above to a file and import into your nash session:
 
 ```sh
-λ> ./tools/azure/getcredentials.sh nash <service principal name> <service secret> > credentials
+λ> ./tools/azure/getcredentials.sh nash klb-sp-tests 123456 "CLOUDFORMATION - QA" > credentials
 λ> import ./credentials
 ```
 
 For lame linux shell (like bash):
 
 ```sh
-λ> ./tools/azure/getcredentials.sh sh klb-sp-tests 123456
+λ> ./tools/azure/getcredentials.sh sh klb-sp-tests 123456 "CLOUDFORMATION - QA"
 export AZURE_SUBSCRIPTION_ID="XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXXXXX"
 export AZURE_SUBSCRIPTION_NAME="CLOUDFORMATION - QA"
 export AZURE_TENANT_ID="XXXXXXXX-XXXX-XXXX-XXXXXXXXXXXXXX"
@@ -108,7 +108,7 @@ export AZURE_CLIENT_SECRET="123456"
 Redirect the output above to a file and import into your lame shell session:
 
 ```sh
-λ> ./tools/azure/getcredentials.sh sh <service principal name> <service secret> > credentials
+λ> ./tools/azure/getcredentials.sh sh klb-sp-tests 123456 "CLOUDFORMATION - QA" > credentials
 λ> source ./credentials
 ```
 
