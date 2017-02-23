@@ -22,6 +22,7 @@ import (
 	"bytes"
 	"fmt"
 	"strings"
+	"sync"
 )
 
 const (
@@ -32,6 +33,9 @@ const (
 	userAgentFormat = "Azure-SDK-For-Go/%s arm-%s/%s"
 )
 
+var zueralock sync.Mutex
+var zueralock2 sync.Mutex
+
 // cached results of UserAgent and Version to prevent repeated operations.
 var (
 	userAgent string
@@ -40,6 +44,8 @@ var (
 
 // UserAgent returns the UserAgent string to use when sending http.Requests.
 func UserAgent() string {
+	zueralock.Lock()
+	defer zueralock.Unlock()
 	if userAgent == "" {
 		userAgent = fmt.Sprintf(userAgentFormat, Version(), "resources", "2016-09-01")
 	}
@@ -48,6 +54,8 @@ func UserAgent() string {
 
 // Version returns the semantic version (see http://semver.org) of the client.
 func Version() string {
+	zueralock2.Lock()
+	defer zueralock2.Unlock()
 	if version == "" {
 		versionBuilder := bytes.NewBufferString(fmt.Sprintf("%s.%s.%s", major, minor, patch))
 		if tag != "" {
